@@ -1,8 +1,3 @@
-<!-- StreamTune Logo -->
-<p align="center">
-  <img src="[https://yourstreamtuneapplogo.com](https://github.com/ishan-1010/StreamTune/blob/main/1j%2BojlxEOMkX9Wyqfhe43D6kh.png)" alt="StreamTune Logo" width="100">
-</p>
-
 <!-- StreamTune - Interactive Machine Learning Model Tuning -->
 <h1 align="center">StreamTune - Interactive Machine Learning Model Tuning</h1>
 
@@ -85,10 +80,7 @@ Choose models for comparison, tune their hyperparameters, and evaluate their per
 
 We value your feedback! Use the Feedback Form in the app to share your thoughts and suggestions with us.
 
-<!-- App Screenshot -->
-<p align="center">
-  <img src="https://yourscreenshoturl.com" alt="StreamTune Screenshot">
-</p>
+
 
 <!-- Footer -->
 <p align="center">
