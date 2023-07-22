@@ -11,9 +11,11 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.datasets import load_iris, load_breast_cancer  # Add the missing imports
+from sklearn.datasets import load_iris, load_breast_cancer
+from sklearn.preprocessing import StandardScaler
 
 
+# Function to format the classification report as a DataFrame
 def format_classification_report(report):
     report_data = []
     lines = report.split("\n")
@@ -34,6 +36,7 @@ st.write(
     "Upload your dataset, select models, and tune hyperparameters to optimize model performance."
 )
 
+# Sidebar - Dataset Upload and Sample Datasets
 st.sidebar.title("Upload or Use Sample Dataset")
 sample_dataset = st.sidebar.selectbox(
     "Select a sample dataset", ["Iris", "Breast Cancer", "Custom"]
@@ -49,6 +52,8 @@ else:
     )
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)  # Use pd.read_excel() for Excel files
+    elif uploaded_file.name.endswith(".xlsx"):
+        data = pd.read_excel(uploaded_file)
     else:
         data = None
 
@@ -63,11 +68,9 @@ if data is not None:
     else:
         df = data
 
-    # Display dataset preview
     st.write("Data Preview:")
     st.dataframe(df.head())
 
-    # Sidebar - Target Variable Selection
     st.sidebar.title("Select Target Variable")
     target_variable = st.sidebar.selectbox("Select the target variable", df.columns)
 
@@ -97,7 +100,6 @@ if data is not None:
 
     non_tunable_models = ["Logistic Regression", "Support Vector Machine"]
 
-    # Real-Time Prediction Form
     st.write("## Model Comparison and Evaluation:")
     selected_models = st.sidebar.multiselect(
         "Select models for comparison",
@@ -107,11 +109,16 @@ if data is not None:
     if len(selected_models) == 0:
         st.warning("Please select models for comparison from the sidebar.")
     else:
+        # Data Splitting and Model Training
         X = df.drop(columns=[target_variable])
         y = df[target_variable]
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
+
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
 
         for selected_model in selected_models:
             st.write(f"### {selected_model}")
@@ -142,17 +149,22 @@ if data is not None:
                     )
 
             elif selected_model == "Logistic Regression":
-                model_instance = LogisticRegression()
+                model_instance = LogisticRegression(max_iter=1000)
 
             elif selected_model == "Support Vector Machine":
                 model_instance = SVC(kernel="linear", C=1.0, random_state=42)
 
-            model_instance.fit(X_train, y_train)
+            # Fit the model
+            if selected_model == "k-Nearest Neighbors":
+                model_instance.fit(X_train_scaled, y_train)  # Use scaled data
+            else:
+                model_instance.fit(X_train, y_train)
 
             # Make predictions
             y_pred = model_instance.predict(X_test)
             accuracy = accuracy_score(y_test, y_pred)
 
+            # Center the accuracy value and add a white border around it
             st.markdown(
                 f"<p style='text-align:center; padding: 10px; border: 1px solid white; border-radius: 5px;'>"
                 f"<b style='font-size: 18px;'>Accuracy:</b> {accuracy:.2f}</p>",
@@ -193,13 +205,14 @@ if data is not None:
             df_report = format_classification_report(report)
             st.table(df_report)
 
-            st.write("")  
-            st.write("")  
-            st.write("")  
-            st.write("")  
-            st.write("")  
-            st.write("")  
-            st.write("")  
+            # Add some distance between the classification report and the feedback form
+            st.write("")  # Empty line
+            st.write("")  # Empty line
+            st.write("")  # Empty line
+            st.write("")  # Empty line
+            st.write("")  # Empty line
+            st.write("")  # Empty line
+            st.write("")  # Empty line
 
 # User Feedback Form
 feedback_expander = st.expander("Feedback Form", expanded=False)
@@ -214,5 +227,6 @@ with feedback_expander.form(key="feedback_form"):
 # Process user feedback
 if submit_button:
     with open("feedback.txt", "a") as f:
-          f.write(feedback_text + "\n")
+        f.write(feedback_text + "\n")
+
     st.success("Feedback submitted successfully. Thank you!")
