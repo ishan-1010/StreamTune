@@ -1,6 +1,6 @@
 <!-- StreamTune Logo -->
 <p align="center">
-  <img src="https://yourstreamtuneapplogo.com" alt="StreamTune Logo" width="100">
+  <img src="[https://yourstreamtuneapplogo.com](https://github.com/ishan-1010/StreamTune/blob/main/1j%2BojlxEOMkX9Wyqfhe43D6kh.png)" alt="StreamTune Logo" width="100">
 </p>
 
 <!-- StreamTune - Interactive Machine Learning Model Tuning -->
